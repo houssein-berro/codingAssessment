@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import SplashScreen from '../screens/splash/splashScreen';
 import OnboardingNavigator from './onboarding/onboardingNavigator';
-// import MainNavigator from './MainNavigator';
+import MainNavigator from './main/mainNavigator';
 
 const Stack = createStackNavigator();
 
