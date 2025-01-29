@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import MainScreen from '../../screens/main/mainScreen';
 import VoicebotScreen from '../../screens/main/voicebotScreen';
-import SettingsScreen from '../../screens/settings/settingsScreen';
+import SettingsNavigator from '../settings/settingsNavigator';
 
 const MainStack = createStackNavigator();
 
@@ -23,10 +23,8 @@ export default function MainNavigator() {
         }}
       />
       
-       <MainStack.Screen
-        name="Settings"
-        component={SettingsScreen}
-      />
+      <MainStack.Screen name="Settings" component={SettingsNavigator} />
+
     </MainStack.Navigator>
   )
 }

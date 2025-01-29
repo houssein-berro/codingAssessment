@@ -1,17 +1,16 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import {createStackNavigator} from '@react-navigation/stack';
 
 import WelcomeScreen from '../../screens/onboarding/welcomeScreen';
 import CompanyIdScreen from '../../screens/onboarding/companyIdScreen';
 import VoicesScreen from '../../screens/onboarding/voicesScreen';
-
+import MainNavigator from '../main/mainNavigator';
 
 const OnboardingStack = createStackNavigator();
 
 export default function OnboardingNavigator() {
   return (
     <OnboardingStack.Navigator>
-
       <OnboardingStack.Screen
         name="Welcome"
         component={WelcomeScreen}
@@ -34,6 +33,12 @@ export default function OnboardingNavigator() {
         options={{
           title: 'Pick Voice',
         }}
+      />
+
+      <OnboardingStack.Screen
+        name="Main"
+        component={MainNavigator}
+        options={{headerShown: false}}
       />
     </OnboardingStack.Navigator>
   );
