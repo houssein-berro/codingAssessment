@@ -19,7 +19,10 @@ export default function RootNavigator() {
       {showSplash ? (
         <Stack.Screen name="Splash" component={SplashScreen} />
       ) : (
-        <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
+        <Stack.Screen
+          name="Onboarding"
+          component={OnboardingNavigator}
+        />
       )}
     </Stack.Navigator>
   );
