@@ -1,14 +1,42 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect, useRef } from 'react';
+import { View, Text, ActivityIndicator, StyleSheet, Animated } from 'react-native';
+import { SafeAreaWrapper } from '../../components/safeArea/safeArea';
 
-const SplashScreen = () => {
+export default function SplashScreen() {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    // 🔹 Fade-in animation when the screen loads
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
-    <View>
-      <Text>SplashScreen</Text>
-    </View>
-  )
+    <SafeAreaWrapper>
+      <View style={styles.container}>
+        <Animated.Text style={[styles.title, { opacity: fadeAnim }]}>
+          Welcome to Our App
+        </Animated.Text>
+        <ActivityIndicator size="large" color="#2196F3" />
+      </View>
+    </SafeAreaWrapper>
+  );
 }
 
-export default SplashScreen;
-
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#1E293B',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+});
