@@ -24,6 +24,8 @@ export default function MainNavigator() {
         component={VoicebotScreen}
         options={{
           presentation: 'modal',
+          animation: 'reveal_from_bottom',
+          headerShown:false,
         }}
       />
 
@@ -31,7 +33,6 @@ export default function MainNavigator() {
         name="SettingsStack"
         component={SettingsNavigator}
         options={{
-          presentation: 'transparentModal',
           headerShown: false,
         }} 
       />
