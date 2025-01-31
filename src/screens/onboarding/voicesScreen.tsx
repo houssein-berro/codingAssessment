@@ -53,14 +53,13 @@ export default function PickVoiceScreen() {
 
   const handleSelectVoice = (voiceId: string) => {
     setSelectedVoice(voiceId);
-    setError(''); // Clear error when selection is made
+    setError('');
   };
 
   const handleContinue = () => {
     if (!selectedVoice) {
       setError('⚠ Please select a voice before continuing.');
 
-      // 🔹 Shake animation for the button
       Animated.sequence([
         Animated.timing(shakeAnim, {
           toValue: 10,

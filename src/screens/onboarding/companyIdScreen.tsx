@@ -13,7 +13,6 @@ import {SafeAreaWrapper} from '../../components/safeArea/safeArea';
 import {PrimaryButton} from '../../components/primaryButton/primaryButton';
 import {useNavigation} from '@react-navigation/native';
 
-// 🔹 Dummy Company IDs
 const VALID_COMPANY_IDS = [
   'ABC123',
   'XYZ789',
@@ -65,7 +64,6 @@ export default function CompanyIdScreen() {
     } else {
       setError('❌ Invalid Company ID. Please try again.');
 
-      // 🔹 Shake animation for button
       Animated.sequence([
         Animated.timing(shakeAnim, {
           toValue: 10,
@@ -97,14 +95,12 @@ export default function CompanyIdScreen() {
     <SafeAreaWrapper>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.flexContainer}>
-          {/* Main Content */}
           <View style={styles.content}>
             <Text style={styles.title}>Enter Your Company ID</Text>
             <Text style={styles.subtitle}>
               Please enter your unique company ID to continue.
             </Text>
 
-            {/* Input Field */}
             <TextInput
               style={[styles.input, isFocused && styles.inputFocused]}
               placeholder="Company ID"
@@ -118,7 +114,6 @@ export default function CompanyIdScreen() {
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
           </View>
 
-          {/* 🔹 Footer (Matches Pick Voice screen exactly) */}
           <View style={styles.footer}>
             <View style={styles.separator} />
             <Animated.View style={[{transform: [{translateX: shakeAnim}]}]}>

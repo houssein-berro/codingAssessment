@@ -4,7 +4,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import MainScreen from '../../screens/main/mainScreen';
 import VoicebotScreen from '../../screens/main/voicebotScreen';
 import SettingsNavigator from '../settings/settingsNavigator';
-import VoicesScreen from '../../screens/onboarding/voicesScreen';
 
 const MainStack = createStackNavigator();
 
@@ -19,7 +18,6 @@ export default function MainNavigator() {
           presentation: 'card',
         }}
       />
-      
 
       <MainStack.Screen
         name="Voicebot"
@@ -29,7 +27,14 @@ export default function MainNavigator() {
         }}
       />
 
-      <MainStack.Screen name="Settings" component={SettingsNavigator} />
+      <MainStack.Screen
+        name="SettingsStack"
+        component={SettingsNavigator}
+        options={{
+          presentation: 'transparentModal',
+          headerShown: false,
+        }} 
+      />
     </MainStack.Navigator>
   );
 }
