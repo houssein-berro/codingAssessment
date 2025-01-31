@@ -6,7 +6,6 @@ export default function SplashScreen() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // 🔹 Fade-in animation when the screen loads
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 800,
