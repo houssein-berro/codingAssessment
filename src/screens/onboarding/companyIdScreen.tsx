@@ -1,3 +1,5 @@
+// src/screens/onboarding/EnterCompanyID.tsx
+
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -8,61 +10,79 @@ import {
   TouchableWithoutFeedback,
   Platform,
   Animated,
+  Alert,
 } from 'react-native';
 import {SafeAreaWrapper} from '../../components/safeArea/safeArea';
 import {PrimaryButton} from '../../components/primaryButton/primaryButton';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import BottomSheet from '@gorhom/bottom-sheet';
 
-const VALID_COMPANY_IDS = [
-  'ABC123',
-  'XYZ789',
-  'TEST456',
-  'HELLO999',
-  'COMPANY321',
-];
-
-export default function CompanyIdScreen() {
+const EnterCompanyID = () => {
   const [companyId, setCompanyId] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [error, setError] = useState('');
   const [isValid, setIsValid] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const shakeAnim = useState(new Animated.Value(0))[0];
+
   const navigation = useNavigation();
-  const shakeAnim = new Animated.Value(0);
+  const route = useRoute();
+  const {fromSettings, bottomSheetRef} = route.params || {};
+ 
+ 
+  const fetchCompanyIds = async (): Promise<string[]> => {
+    try {
+      const storedIds = await AsyncStorage.getItem('companyIds');
+      return storedIds ? JSON.parse(storedIds) : [];
+    } catch (error) {
+      console.error('Error fetching company IDs:', error);
+      return [];
+    }
+  };
 
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
-      e => setKeyboardHeight(e.endCoordinates.height),
-    );
-
-    const keyboardDidHideListener = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
-      () => setKeyboardHeight(0),
-    );
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
-
-  const handleChangeText = (text: string) => {
-    setCompanyId(text);
+  const handleChangeText = async (text: string) => {
+    const trimmedText = text.toUpperCase().trim();
+    setCompanyId(trimmedText);
     setError('');
 
-    if (VALID_COMPANY_IDS.includes(text.toUpperCase().trim())) {
+    const validCompanyIds = await fetchCompanyIds();
+
+    if (trimmedText.length > 0 && !validCompanyIds.includes(trimmedText)) {
       setIsValid(true);
     } else {
       setIsValid(false);
     }
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (isValid) {
-      navigation.navigate('PickVoice');
+      if (fromSettings && bottomSheetRef) {
+        bottomSheetRef.current?.close();
+        navigation.navigate('PickVoice');
+      } else {
+        try {
+          const existingIds = await fetchCompanyIds();
+          if (existingIds.includes(companyId)) {
+            Alert.alert('Duplicate ID', 'This Company ID is already added.');
+            return;
+          }
+
+          const updatedIds = [...existingIds, companyId];
+          await AsyncStorage.setItem('companyIds', JSON.stringify(updatedIds));
+          Alert.alert('Success', 'Company ID added successfully.');
+
+          if (fromSettings && bottomSheetRef && bottomSheetRef.current) {
+            bottomSheetRef?.current.close();
+          }
+
+          navigation.navigate('PickVoice');
+        } catch (error) {
+          console.error('Error saving company ID:', error);
+          Alert.alert('Error', 'Failed to save Company ID.');
+        }
+      }
     } else {
-      setError('❌ Invalid Company ID. Please try again.');
+      setError('❌ Invalid or Duplicate Company ID. Please try again.');
 
       Animated.sequence([
         Animated.timing(shakeAnim, {
@@ -86,8 +106,6 @@ export default function CompanyIdScreen() {
           useNativeDriver: true,
         }),
       ]).start();
-
-      return;
     }
   };
 
@@ -101,48 +119,57 @@ export default function CompanyIdScreen() {
               Please enter your unique company ID to continue.
             </Text>
 
-            <TextInput
-              style={[styles.input, isFocused && styles.inputFocused]}
-              placeholder="Company ID"
-              placeholderTextColor="#888"
-              value={companyId}
-              onChangeText={handleChangeText}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              keyboardType="default"
-            />
+            <Animated.View
+              style={[
+                styles.inputContainer,
+                { transform: [{ translateX: shakeAnim }] },
+              ]}>
+              <TextInput
+                style={[styles.input, isFocused && styles.inputFocused]}
+                placeholder="Company ID"
+                placeholderTextColor="#888"
+                value={companyId}
+                onChangeText={handleChangeText}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
+                keyboardType="default"
+                autoCapitalize="characters"
+              />
+            </Animated.View>
+
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
           </View>
 
           <View style={styles.footer}>
             <View style={styles.separator} />
-            <Animated.View style={[{transform: [{translateX: shakeAnim}]}]}>
-              <PrimaryButton title="Continue" onPress={handleContinue} />
-            </Animated.View>
+            <PrimaryButton title="Continue" onPress={handleContinue} />
           </View>
         </View>
       </TouchableWithoutFeedback>
     </SafeAreaWrapper>
   );
-}
+};
+
+export default EnterCompanyID;
 
 const styles = StyleSheet.create({
   flexContainer: {
     flex: 1,
     justifyContent: 'space-between',
+    backgroundColor: '#fff',
   },
   content: {
-    flexGrow: 1, 
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
   },
   title: {
     fontSize: 26,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#1E293B',
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
@@ -150,9 +177,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 20,
   },
-  input: {
+  inputContainer: {
     width: '100%',
     maxWidth: 320,
+  },
+  input: {
+    width: '100%',
     borderWidth: 1,
     borderColor: '#ccc',
     backgroundColor: '#f9f9f9',
@@ -161,7 +191,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     color: '#222',
-    marginBottom: 10,
   },
   inputFocused: {
     borderColor: '#2196F3',
@@ -171,13 +200,14 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 14,
     textAlign: 'center',
-    marginTop: 0,
+    marginTop: 10,
   },
   footer: {
     width: '100%',
+
     paddingHorizontal: 24,
     backgroundColor: '#fff',
-    padding:20
+    paddingBottom: 20,
   },
   separator: {
     width: '100%',
