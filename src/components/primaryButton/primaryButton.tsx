@@ -29,7 +29,6 @@ export function PrimaryButton({ title, onPress, disabled }: Props) {
 const styles = StyleSheet.create({
   button: {
     width: '100%',
-    maxWidth: 280,
     backgroundColor: '#2196F3',
     paddingVertical: 14,
     paddingHorizontal: 24,

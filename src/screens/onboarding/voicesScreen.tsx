@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,7 @@ import {
 import { SafeAreaWrapper } from '../../components/safeArea/safeArea';
 import { PrimaryButton } from '../../components/primaryButton/primaryButton';
 import { useNavigation, useRoute } from '@react-navigation/native';
-
+import { useBottomSheet } from '../../hooks/useBottomSheet'; 
 const VOICES = [
   { id: '1', name: 'English - Male' },
   { id: '2', name: 'English - Female' },
@@ -23,17 +23,16 @@ const VOICES = [
   { id: '6', name: 'Arabic - Female' },
 ];
 
-export default function PickVoiceScreen({ bottomSheetRef }) {
+export default function PickVoiceScreen() {
   const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [error, setError] = useState('');
-
-
+  const { bottomSheetRef } = useBottomSheet(); 
   const navigation = useNavigation();
   const route = useRoute();
-  const shakeAnim = new Animated.Value(0);
+  const shakeAnim = useRef(new Animated.Value(0)).current;
 
-  // Get navigation state and previous route
+
   const routes = navigation.getState()?.routes;
   const prevRoute = routes?.[routes.length - 2]?.name ?? null;
   const isFromSettings = prevRoute === 'Settings';
@@ -58,20 +57,15 @@ export default function PickVoiceScreen({ bottomSheetRef }) {
   const handleSelectVoice = (voiceId: string) => {
     setSelectedVoice(voiceId);
     setError('');
-
-    // Close the bottom sheet if accessed from Settings
+  
     if (isFromSettings && bottomSheetRef?.current) {
-      bottomSheetRef.current.close();
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Settings' }],
-      });
+      bottomSheetRef.current.close(); 
     }
   };
 
   const handleContinue = () => {
     if (!selectedVoice) {
-      setError('⚠ Please select a voice before continuing.');
+      setError('❌ Please select a voice before continuing.');
 
       Animated.sequence([
         Animated.timing(shakeAnim, { toValue: 10, duration: 50, useNativeDriver: true }),
@@ -128,7 +122,7 @@ export default function PickVoiceScreen({ bottomSheetRef }) {
             {prevRoute === 'EnterCompanyID' && (
               <View style={styles.footer}>
                 <View style={styles.separator} />
-                <Animated.View style={[{ transform: [{ translateX: shakeAnim }] }]}>
+                <Animated.View style={[{ transform: [{ translateX: shakeAnim }] }]} >
                   <PrimaryButton title="Continue" onPress={handleContinue} />
                 </Animated.View>
               </View>
