@@ -21,7 +21,7 @@ export default function RootNavigator() {
       ) : (
         <Stack.Screen
           name="Onboarding"
-          component={OnboardingNavigator}
+          component={MainNavigator}
         />
       )}
     </Stack.Navigator>
