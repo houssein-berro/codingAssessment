@@ -25,7 +25,7 @@ export default function MainNavigator() {
         options={{
           presentation: 'modal',
           animation: 'reveal_from_bottom',
-          headerShown:false,
+          headerShown:true,
         }}
       />
 

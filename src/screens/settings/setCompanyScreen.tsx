@@ -11,12 +11,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { PrimaryButton } from '../../components/primaryButton/primaryButton';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useBottomSheet } from '../../hooks/useBottomSheet';
 
 const SetCompanyScreen = () => {
   const [companyIds, setCompanyIds] = useState<string[]>([]);
   const navigation = useNavigation();
-  const { bottomSheetRef } = useBottomSheet(); 
 
   useFocusEffect(
     React.useCallback(() => {
@@ -79,7 +77,6 @@ const SetCompanyScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Manage Company IDs</Text>
       <Text style={styles.subtitle}>Select or delete existing Company IDs:</Text>
 
       {companyIds.length > 0 ? (
@@ -133,11 +130,8 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 15,
     alignItems: 'center',
-    elevation: 2, 
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
+        borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
   cardContent: {
     flex: 1,
@@ -162,7 +156,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   footer: {
-    marginBottom: 100,
     width: '100%',
   },
 });

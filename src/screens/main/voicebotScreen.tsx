@@ -4,13 +4,10 @@ import { useNavigation } from '@react-navigation/native';
 import { PrimaryButton } from '../../components/primaryButton/primaryButton';
 
 const VoiceBotScreen = () => {
-  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>VoiceBot Screen</Text>
       <Text style={styles.subtitle}>Your AI Voice Assistant is Ready</Text>
-      <PrimaryButton title='Close' onPress={()=> navigation.goBack()}/>
     </View>
   );
 };

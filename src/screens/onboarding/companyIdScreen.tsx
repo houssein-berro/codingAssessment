@@ -1,6 +1,4 @@
-// src/screens/onboarding/EnterCompanyID.tsx
-
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,15 +6,15 @@ import {
   StyleSheet,
   Keyboard,
   TouchableWithoutFeedback,
-  Platform,
   Animated,
   Alert,
 } from 'react-native';
-import {SafeAreaWrapper} from '../../components/safeArea/safeArea';
-import {PrimaryButton} from '../../components/primaryButton/primaryButton';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import { SafeAreaWrapper } from '../../components/safeArea/safeArea';
+import { PrimaryButton } from '../../components/primaryButton/primaryButton';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useBottomSheet } from '../../hooks/useBottomSheet';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import BottomSheet from '@gorhom/bottom-sheet';
 
 const EnterCompanyID = () => {
   const [companyId, setCompanyId] = useState('');
@@ -27,10 +25,10 @@ const EnterCompanyID = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const {fromSettings, bottomSheetRef} = route.params || {};
- 
- 
-  const fetchCompanyIds = async (): Promise<string[]> => {
+  const { fromSettings } = route.params || {};
+  const { bottomSheetRef } = useBottomSheet();
+
+  const fetchCompanyIds = async () => {
     try {
       const storedIds = await AsyncStorage.getItem('companyIds');
       return storedIds ? JSON.parse(storedIds) : [];
@@ -40,7 +38,7 @@ const EnterCompanyID = () => {
     }
   };
 
-  const handleChangeText = async (text: string) => {
+  const handleChangeText = async (text) => {
     const trimmedText = text.toUpperCase().trim();
     setCompanyId(trimmedText);
     setError('');
@@ -56,30 +54,25 @@ const EnterCompanyID = () => {
 
   const handleContinue = async () => {
     if (isValid) {
-      if (fromSettings && bottomSheetRef) {
-        bottomSheetRef.current?.close();
-        navigation.navigate('PickVoice');
-      } else {
-        try {
-          const existingIds = await fetchCompanyIds();
-          if (existingIds.includes(companyId)) {
-            Alert.alert('Duplicate ID', 'This Company ID is already added.');
-            return;
-          }
-
-          const updatedIds = [...existingIds, companyId];
-          await AsyncStorage.setItem('companyIds', JSON.stringify(updatedIds));
-          Alert.alert('Success', 'Company ID added successfully.');
-
-          if (fromSettings && bottomSheetRef && bottomSheetRef.current) {
-            bottomSheetRef?.current.close();
-          }
-
-          navigation.navigate('PickVoice');
-        } catch (error) {
-          console.error('Error saving company ID:', error);
-          Alert.alert('Error', 'Failed to save Company ID.');
+      try {
+        const existingIds = await fetchCompanyIds();
+        if (existingIds.includes(companyId)) {
+          Alert.alert('Duplicate ID', 'This Company ID is already added.');
+          return;
         }
+
+        const updatedIds = [...existingIds, companyId];
+        await AsyncStorage.setItem('companyIds', JSON.stringify(updatedIds));
+        Alert.alert('Success', 'Company ID added successfully.');
+
+        if (fromSettings && bottomSheetRef?.current) {
+          bottomSheetRef.current.close();
+        }
+
+        navigation.navigate('PickVoice');
+      } catch (error) {
+        console.error('Error saving company ID:', error);
+        Alert.alert('Error', 'Failed to save Company ID.');
       }
     } else {
       setError('❌ Invalid or Duplicate Company ID. Please try again.');
@@ -123,7 +116,8 @@ const EnterCompanyID = () => {
               style={[
                 styles.inputContainer,
                 { transform: [{ translateX: shakeAnim }] },
-              ]}>
+              ]}
+            >
               <TextInput
                 style={[styles.input, isFocused && styles.inputFocused]}
                 placeholder="Company ID"
@@ -204,7 +198,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     width: '100%',
-
     paddingHorizontal: 24,
     backgroundColor: '#fff',
     paddingBottom: 20,
