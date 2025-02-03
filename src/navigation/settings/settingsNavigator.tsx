@@ -7,13 +7,14 @@ import PickVoiceScreen from '../../screens/onboarding/voicesScreen';
 
 const SettingsStack = createStackNavigator();
 
-const SettingsNavigator = () => {
+const SettingsNavigator = ({ initialRoute }) => {
   return (
     <SettingsStack.Navigator initialRouteName="Settings">
       <SettingsStack.Screen
         name="Settings"
         component={SettingsScreen}
         options={{ headerShown: false }}
+        initialParams={{ deepLinkTarget: initialRoute }} 
       />
       <SettingsStack.Screen name="SetCompanyID" component={SetCompanyScreen} />
       <SettingsStack.Screen name="EnterCompanyId" component={EnterCompanyID} />

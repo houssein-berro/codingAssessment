@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import SplashScreen from '../screens/splash/splashScreen';
 import OnboardingNavigator from './onboarding/onboardingNavigator';
 import MainNavigator from './main/mainNavigator';
 import { Linking } from 'react-native';
@@ -12,21 +11,16 @@ export default function RootNavigator() {
 
   useEffect(() => {
     Linking.getInitialURL().then((url) => {
-      if (url) {
-        console.log('RootNavigator detected deep link URL:', url);
-        setInitialRoute('Main');
+      if (url && url.includes('/settings')) {
+        setInitialRoute('MainStack');
       }
     });
   }, []);
 
-  useEffect(() => {
-    console.log('Initial route set to:', initialRoute);
-  }, [initialRoute]);
-
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={initialRoute}>
+    <Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
-      <Stack.Screen name="Main" component={MainNavigator} />
+      <Stack.Screen name="MainStack" component={MainNavigator} />
     </Stack.Navigator>
   );
 }
