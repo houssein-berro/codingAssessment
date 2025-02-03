@@ -66,7 +66,11 @@ const EnterCompanyID = () => {
 
         if (fromSettings && bottomSheetRef?.current) {
           bottomSheetRef.current.close();
-          Keyboard.dismiss()
+          Keyboard.dismiss();
+          navigation.reset({
+            index:0,
+            routes:[{name: 'Settings'}]
+          })
         } else {
           navigation.navigate('PickVoice');
         }
