@@ -1,7 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
@@ -9,13 +9,11 @@ const SettingsScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.headerTitle}>Settings</Text>
-
       <View style={styles.section}>
         <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('PickVoice')}>
           <Ionicons name="mic-outline" size={24} color="#4F8EF7" />
           <Text style={styles.optionText}>Pick Voice</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('SetCompanyID')}>
           <Ionicons name="business-outline" size={24} color="#4F8EF7" />
           <Text style={styles.optionText}>Set Company ID</Text>
@@ -30,7 +28,7 @@ export default SettingsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9FAFB'
+    backgroundColor: '#F9FAFB',
   },
   headerTitle: {
     fontSize: 22,
