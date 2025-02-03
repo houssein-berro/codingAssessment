@@ -13,7 +13,6 @@ import { SafeAreaWrapper } from '../../components/safeArea/safeArea';
 import { PrimaryButton } from '../../components/primaryButton/primaryButton';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useBottomSheet } from '../../hooks/useBottomSheet';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EnterCompanyID = () => {
@@ -67,9 +66,10 @@ const EnterCompanyID = () => {
 
         if (fromSettings && bottomSheetRef?.current) {
           bottomSheetRef.current.close();
+          Keyboard.dismiss()
+        } else {
+          navigation.navigate('PickVoice');
         }
-
-        navigation.navigate('PickVoice');
       } catch (error) {
         console.error('Error saving company ID:', error);
         Alert.alert('Error', 'Failed to save Company ID.');
