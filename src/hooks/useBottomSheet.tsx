@@ -1,4 +1,3 @@
-// useBottomSheet.js
 import React, { createContext, useContext, useRef, useState } from 'react';
 import BottomSheet from '@gorhom/bottom-sheet';
 
@@ -7,7 +6,7 @@ const BottomSheetContext = createContext(null);
 export const BottomSheetProvider = ({ children }) => {
   const bottomSheetRef = useRef(null);
   const [deepLinkSettings, setDeepLinkSettings] = useState(false);
-
+  const [deepLinkTarget, setDeepLinkTarget] = useState(false);
 
   return (
     <BottomSheetContext.Provider
@@ -15,6 +14,8 @@ export const BottomSheetProvider = ({ children }) => {
         bottomSheetRef,
         deepLinkSettings,
         setDeepLinkSettings,
+        deepLinkTarget,
+        setDeepLinkTarget,
       }}
     >
       {children}

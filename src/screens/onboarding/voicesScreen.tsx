@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, {useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -9,18 +9,18 @@ import {
   TouchableWithoutFeedback,
   Animated,
 } from 'react-native';
-import { SafeAreaWrapper } from '../../components/safeArea/safeArea';
-import { PrimaryButton } from '../../components/primaryButton/primaryButton';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { useBottomSheet } from '../../hooks/useBottomSheet';
+import {SafeAreaWrapper} from '../../components/safeArea/safeArea';
+import {PrimaryButton} from '../../components/primaryButton/primaryButton';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {useBottomSheet} from '../../hooks/useBottomSheet';
 
 const VOICES = [
-  { id: '1', name: 'English - Male' },
-  { id: '2', name: 'English - Female' },
-  { id: '3', name: 'French - Male' },
-  { id: '4', name: 'French - Female' },
-  { id: '5', name: 'Arabic - Male' },
-  { id: '6', name: 'Arabic - Female' },
+  {id: '1', name: 'English - Male'},
+  {id: '2', name: 'English - Female'},
+  {id: '3', name: 'French - Male'},
+  {id: '4', name: 'French - Female'},
+  {id: '5', name: 'Arabic - Male'},
+  {id: '6', name: 'Arabic - Female'},
 ];
 
 export default function PickVoiceScreen() {
@@ -30,8 +30,8 @@ export default function PickVoiceScreen() {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { fromSettings } = route.params || {}; 
-  const { bottomSheetRef } = useBottomSheet();
+  const {fromSettings} = route.params || {};
+  const {bottomSheetRef} = useBottomSheet();
 
   const handleSelectVoice = (voiceId: string) => {
     setSelectedVoice(voiceId);
@@ -42,7 +42,7 @@ export default function PickVoiceScreen() {
       setTimeout(() => {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Settings' }], 
+          routes: [{name: 'Settings'}],
         });
       }, 300);
     }
@@ -83,7 +83,7 @@ export default function PickVoiceScreen() {
       setTimeout(() => {
         navigation.reset({
           index: 0,
-          routes: [{ name: 'Settings' }],
+          routes: [{name: 'Settings'}],
         });
       }, 300);
     } else {
@@ -96,22 +96,22 @@ export default function PickVoiceScreen() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.flexContainer}>
           <View style={styles.content}>
-            <Text style={styles.title}>Pick a Voice</Text>
-            <Text style={styles.subtitle}>Choose your preferred voice below:</Text>
+            <Text style={styles.subtitle}>
+              Choose your preferred voice below:
+            </Text>
 
             <FlatList
               data={VOICES}
-              keyExtractor={(item) => item.id}
+              keyExtractor={item => item.id}
               numColumns={2}
               columnWrapperStyle={styles.row}
-              renderItem={({ item }) => (
+              renderItem={({item}) => (
                 <TouchableOpacity
                   style={[
                     styles.voiceOption,
                     selectedVoice === item.id && styles.voiceOptionSelected,
                   ]}
-                  onPress={() => handleSelectVoice(item.id)}
-                >
+                  onPress={() => handleSelectVoice(item.id)}>
                   <Text style={[styles.voiceText]}>{item.name}</Text>
                 </TouchableOpacity>
               )}
@@ -120,15 +120,16 @@ export default function PickVoiceScreen() {
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
           </View>
 
-          <View style={styles.footer}>
-            <PrimaryButton title="Continue" onPress={handleContinue} />
-          </View>
+          {!fromSettings && (
+            <View style={styles.footer}>
+              <PrimaryButton title="Continue" onPress={handleContinue} />
+            </View>
+          )}
         </View>
       </TouchableWithoutFeedback>
     </SafeAreaWrapper>
   );
 }
-
 
 const styles = StyleSheet.create({
   flexContainer: {
@@ -139,6 +140,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
+    paddingVertical: 12,
   },
   contentHigher: {
     flexGrow: 1,

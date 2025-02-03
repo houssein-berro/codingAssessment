@@ -1,3 +1,4 @@
+// screens/main/MainScreen.js
 import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -12,14 +13,19 @@ const MainScreen = () => {
   const [sheetIndex, setSheetIndex] = useState(-1);
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-  const { bottomSheetRef, deepLinkSettings, setDeepLinkSettings } = useBottomSheet();
+  const { bottomSheetRef, deepLinkTarget, setDeepLinkTarget } = useBottomSheet();
 
   useEffect(() => {
-    if (deepLinkSettings) {
-      setSheetIndex(0);
-      setDeepLinkSettings(false);
+    if (deepLinkTarget) {
+      const timer = setTimeout(() => {
+        if (bottomSheetRef.current) {
+          bottomSheetRef.current.snapToIndex(0);
+          setDeepLinkTarget(false);
+        }
+      }, 500); 
+      return () => clearTimeout(timer);
     }
-  }, [deepLinkSettings, setDeepLinkSettings]);
+  }, [deepLinkTarget, bottomSheetRef]);
 
   useEffect(() => {
     if (bottomSheetRef.current && sheetIndex !== null) {
@@ -80,7 +86,7 @@ const MainScreen = () => {
         onChange={handleSheetChanges}
       >
         <BottomSheetView style={styles.bottomSheetContainer}>
-          <SettingsNavigator />
+          <SettingsNavigator initialParams={deepLinkTarget ? { fromDeepLink: true } : {}} />
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>
@@ -88,10 +94,7 @@ const MainScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
   mainContent: {
     flex: 1,
     alignItems: 'center',

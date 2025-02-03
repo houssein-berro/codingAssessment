@@ -1,11 +1,22 @@
 import { getStateFromPath as defaultGetStateFromPath } from '@react-navigation/native';
 
 export const linking = {
-  prefixes: ['myapp://myapp.com', 'https://myapp.com'],
+  prefixes: ['myapp://', 'https://myapp.com'],
   config: {
     screens: {
-      MainScreen: 'MainScreen',
-      Voicebot: 'voicebot',
+      Onboarding: 'onboarding',
+      MainStack: {
+        screens: {
+          MainScreen: 'main',
+          SettingsStack: {
+            path: 'settings',
+            screens: {
+              Settings: '',
+              SetCompanyID: 'setcompanyid',
+            },
+          },
+        },
+      },
     },
   },
   getStateFromPath: (path, options) => defaultGetStateFromPath(path, options),

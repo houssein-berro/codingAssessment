@@ -1,10 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const SettingsScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+
+  useEffect(() => {
+    console.log('[SettingsScreen] route.params:', route.params);
+    if (route.params?.fromDeepLink) {
+      console.log('[SettingsScreen] Launched via deep link—navigating to SetCompanyID');
+      setTimeout(() => {
+        navigation.navigate('SetCompanyID', { fromDeepLink: true });
+      }, 500);
+    }
+  }, [route.params, navigation]);
 
   return (
     <View style={styles.container}>
@@ -12,14 +23,14 @@ const SettingsScreen = () => {
       <View style={styles.section}>
         <TouchableOpacity
           style={styles.option}
-          onPress={() => navigation.navigate('PickVoice', { fromSettings: true })} // Pass the flag
+          onPress={() => navigation.navigate('PickVoice', { fromSettings: true })}
         >
           <Ionicons name="mic-outline" size={24} color="#4F8EF7" />
           <Text style={styles.optionText}>Pick Voice</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.option}
-          onPress={() => navigation.navigate('SetCompanyID', { fromSettings: true })} // Pass the flag
+          onPress={() => navigation.navigate('SetCompanyID', { fromSettings: true })}
         >
           <Ionicons name="business-outline" size={24} color="#4F8EF7" />
           <Text style={styles.optionText}>Set Company ID</Text>

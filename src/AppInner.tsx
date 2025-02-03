@@ -1,56 +1,71 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {Linking} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Linking } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import RootNavigator from './navigation/rootNavigator';
-import {linking} from './navigation/linking';
-import {useBottomSheet} from './hooks/useBottomSheet';
+import { linking } from './navigation/linking';
+import { useBottomSheet } from './hooks/useBottomSheet';
 
 export default function AppInner() {
-  const {bottomSheetRef, setDeepLinkSettings} =
-    useBottomSheet();
+  const { setDeepLinkSettings, setDeepLinkTarget } = useBottomSheet();
   const navigationRef = useRef(null);
-  const [deepLinkDetected, setDeepLinkDetected] = useState(false);
+  const [deepLinkUrl, setDeepLinkUrl] = useState(null);
 
   useEffect(() => {
-    Linking.getInitialURL().then(url => {
+    const handleDeepLink = (url) => {
       if (url && url.includes('/settings')) {
+        setDeepLinkUrl(url);
         setDeepLinkSettings(true);
-        setDeepLinkDetected(true);
-      }
-    });
-
-    const handleUrl = event => {
-      if (event.url && event.url.includes('/settings')) {
-        setDeepLinkSettings(true);
-        setDeepLinkDetected(true);
+        if (url.toLowerCase().includes('setcompanyid')) {
+          setDeepLinkTarget(true);
+        } else {
+          setDeepLinkTarget(false);
+        }
       }
     };
 
-    const subscription = Linking.addEventListener('url', handleUrl);
+    Linking.getInitialURL().then((url) => {
+      handleDeepLink(url);
+    });
+
+    const subscription = Linking.addEventListener('url', (event) => {
+      handleDeepLink(event.url);
+    });
+
     return () => {
       if (subscription && typeof subscription.remove === 'function') {
         subscription.remove();
       } else {
-        Linking.removeEventListener('url', handleUrl);
+        Linking.removeEventListener('url', handleDeepLink);
       }
     };
-  }, [setDeepLinkSettings]);
+  }, [setDeepLinkSettings, setDeepLinkTarget]);
 
   return (
     <NavigationContainer
       ref={navigationRef}
       linking={linking}
       onReady={() => {
-        if (deepLinkDetected && navigationRef.current) {
-          navigationRef.current.reset({
-            index: 0,
-            routes: [{name: 'MainStack'}],
-          });
-          setTimeout(() => {
-            bottomSheetRef.current.snapToIndex(0);
-          }, 1000);
+        if (deepLinkUrl && navigationRef.current) {
+          if (deepLinkUrl.includes('/settings')) {
+            
+            navigationRef.current.reset({
+              index: 0,
+              routes: [
+                {
+                  name: 'MainStack',
+                  state: {
+                    index: 0,
+                    routes: [
+                      { name: 'MainScreen', params: { openBottomSheet: true } },
+                    ],
+                  },
+                },
+              ],
+            });
+          }
         }
-      }}>
+      }}
+    >
       <RootNavigator />
     </NavigationContainer>
   );
