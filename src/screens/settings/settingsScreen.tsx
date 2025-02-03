@@ -10,11 +10,17 @@ const SettingsScreen = () => {
     <View style={styles.container}>
       <Text style={styles.headerTitle}>Settings</Text>
       <View style={styles.section}>
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('PickVoice')}>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => navigation.navigate('PickVoice', { fromSettings: true })} // Pass the flag
+        >
           <Ionicons name="mic-outline" size={24} color="#4F8EF7" />
           <Text style={styles.optionText}>Pick Voice</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('SetCompanyID')}>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => navigation.navigate('SetCompanyID', { fromSettings: true })} // Pass the flag
+        >
           <Ionicons name="business-outline" size={24} color="#4F8EF7" />
           <Text style={styles.optionText}>Set Company ID</Text>
         </TouchableOpacity>
