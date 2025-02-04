@@ -41,32 +41,9 @@ export default function AppInner() {
   }, [setDeepLinkSettings, setDeepLinkTarget]);
 
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      linking={linking}
-      onReady={() => {
-        if (deepLinkUrl && navigationRef.current) {
-          if (deepLinkUrl.includes('/settings')) {
-            
-            navigationRef.current.reset({
-              index: 0,
-              routes: [
-                {
-                  name: 'MainStack',
-                  state: {
-                    index: 0,
-                    routes: [
-                      { name: 'MainScreen', params: { openBottomSheet: true } },
-                    ],
-                  },
-                },
-              ],
-            });
-          }
-        }
-      }}
-    >
-      <RootNavigator />
-    </NavigationContainer>
+    <NavigationContainer>
+  <RootNavigator />
+</NavigationContainer>
+
   );
 }

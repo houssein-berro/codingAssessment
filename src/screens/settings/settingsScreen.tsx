@@ -10,7 +10,6 @@ const SettingsScreen = () => {
   useEffect(() => {
     console.log('[SettingsScreen] route.params:', route.params);
     if (route.params?.fromDeepLink) {
-      console.log('[SettingsScreen] Launched via deep link—navigating to SetCompanyID');
       setTimeout(() => {
         navigation.navigate('SetCompanyID', { fromDeepLink: true });
       }, 500);

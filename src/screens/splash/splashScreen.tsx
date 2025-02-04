@@ -1,8 +1,11 @@
+// screens/splash/splashScreen.js
 import React, { useEffect, useRef } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Linking, ActivityIndicator, Animated } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { SafeAreaWrapper } from '../../components/safeArea/safeArea';
 
 export default function SplashScreen() {
+  const navigation = useNavigation();
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -11,8 +14,20 @@ export default function SplashScreen() {
       duration: 800,
       useNativeDriver: true,
     }).start();
-  }, []);
+  }, [fadeAnim]);
 
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      const initialUrl = await Linking.getInitialURL();
+      if (initialUrl) {
+        navigation.replace('MainStack');
+      } else {
+        navigation.replace('Onboarding');
+      }
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [navigation]);
+  
   return (
     <SafeAreaWrapper>
       <View style={styles.container}>

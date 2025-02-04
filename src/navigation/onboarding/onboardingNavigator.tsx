@@ -31,8 +31,8 @@ export default function OnboardingNavigator() {
         component={VoicesScreen}
         options={{
           title: 'Pick Voice',
-          presentation:'modal',
-          animation:'slide_from_right'
+          presentation: 'modal',
+          animation: 'slide_from_right',
         }}
       />
       <OnboardingStack.Screen

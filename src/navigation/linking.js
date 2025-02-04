@@ -4,7 +4,6 @@ export const linking = {
   prefixes: ['myapp://', 'https://myapp.com'],
   config: {
     screens: {
-      Onboarding: 'onboarding',
       MainStack: {
         screens: {
           MainScreen: 'main',
