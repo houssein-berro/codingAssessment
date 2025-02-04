@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -7,59 +7,44 @@ import {
   TouchableOpacity,
   Keyboard,
   TouchableWithoutFeedback,
-  Platform,
   Animated,
 } from 'react-native';
-import { SafeAreaWrapper } from '../../components/safeArea/safeArea';
-import { PrimaryButton } from '../../components/primaryButton/primaryButton';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { useBottomSheet } from '../../hooks/useBottomSheet'; 
+import {SafeAreaWrapper} from '../../components/safeArea/safeArea';
+import {PrimaryButton} from '../../components/primaryButton/primaryButton';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {useBottomSheet} from '../../hooks/useBottomSheet';
+
 const VOICES = [
-  { id: '1', name: 'English - Male' },
-  { id: '2', name: 'English - Female' },
-  { id: '3', name: 'French - Male' },
-  { id: '4', name: 'French - Female' },
-  { id: '5', name: 'Arabic - Male' },
-  { id: '6', name: 'Arabic - Female' },
+  {id: '1', name: 'English - Male'},
+  {id: '2', name: 'English - Female'},
+  {id: '3', name: 'French - Male'},
+  {id: '4', name: 'French - Female'},
+  {id: '5', name: 'Arabic - Male'},
+  {id: '6', name: 'Arabic - Female'},
 ];
 
 export default function PickVoiceScreen() {
   const [selectedVoice, setSelectedVoice] = useState<string | null>(null);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [error, setError] = useState('');
-  const { bottomSheetRef } = useBottomSheet(); 
-  const navigation = useNavigation();
-  const route = useRoute();
   const shakeAnim = useRef(new Animated.Value(0)).current;
 
-
-  const routes = navigation.getState()?.routes;
-  const prevRoute = routes?.[routes.length - 2]?.name ?? null;
-  const isFromSettings = prevRoute === 'Settings';
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
-      (e) => setKeyboardHeight(e.endCoordinates.height)
-    );
-
-    const keyboardDidHideListener = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
-      () => setKeyboardHeight(0)
-    );
-
-    return () => {
-      keyboardDidShowListener.remove();
-      keyboardDidHideListener.remove();
-    };
-  }, []);
+  const navigation = useNavigation();
+  const route = useRoute();
+  const {fromSettings} = route.params || {};
+  const {bottomSheetRef} = useBottomSheet();
 
   const handleSelectVoice = (voiceId: string) => {
     setSelectedVoice(voiceId);
     setError('');
-  
-    if (isFromSettings && bottomSheetRef?.current) {
-      bottomSheetRef.current.close(); 
+
+    if (fromSettings && bottomSheetRef?.current) {
+      bottomSheetRef.current.close();
+      setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Settings'}],
+        });
+      }, 300);
     }
   };
 
@@ -68,20 +53,39 @@ export default function PickVoiceScreen() {
       setError('❌ Please select a voice before continuing.');
 
       Animated.sequence([
-        Animated.timing(shakeAnim, { toValue: 10, duration: 50, useNativeDriver: true }),
-        Animated.timing(shakeAnim, { toValue: -10, duration: 50, useNativeDriver: true }),
-        Animated.timing(shakeAnim, { toValue: 5, duration: 50, useNativeDriver: true }),
-        Animated.timing(shakeAnim, { toValue: 0, duration: 50, useNativeDriver: true }),
+        Animated.timing(shakeAnim, {
+          toValue: 10,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnim, {
+          toValue: -10,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnim, {
+          toValue: 5,
+          duration: 50,
+          useNativeDriver: true,
+        }),
+        Animated.timing(shakeAnim, {
+          toValue: 0,
+          duration: 50,
+          useNativeDriver: true,
+        }),
       ]).start();
 
       return;
     }
 
-    console.log('Current Screen:', route.name);
-    console.log('Previous Screen:', prevRoute);
-
-    if (isFromSettings) {
-      navigation.goBack();
+    if (fromSettings && bottomSheetRef?.current) {
+      bottomSheetRef.current.close();
+      setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Settings'}],
+        });
+      }, 300);
     } else {
       navigation.navigate('MainStack');
     }
@@ -91,43 +95,36 @@ export default function PickVoiceScreen() {
     <SafeAreaWrapper>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.flexContainer}>
-          <View style={[styles.content, isFromSettings && styles.contentHigher]}>
-            <View style={styles.container}>
-              {prevRoute === 'EnterCompanyID' && <Text style={styles.title}>Pick a Voice</Text>}
-              <Text style={styles.subtitle}>Choose your preferred voice below:</Text>
+          <View style={styles.content}>
+            <Text style={styles.subtitle}>
+              Choose your preferred voice below:
+            </Text>
 
-              <FlatList
-                data={VOICES}
-                keyExtractor={(item) => item.id}
-                numColumns={2}
-                columnWrapperStyle={styles.row}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={[
-                      styles.voiceOption,
-                      selectedVoice === item.id && styles.voiceOptionSelected,
-                    ]}
-                    onPress={() => handleSelectVoice(item.id)}
-                  >
-                    <Text style={[styles.voiceText]}>{item.name}</Text>
-                  </TouchableOpacity>
-                )}
-                contentContainerStyle={styles.listContainer}
-              />
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            <FlatList
+              data={VOICES}
+              keyExtractor={item => item.id}
+              numColumns={2}
+              columnWrapperStyle={styles.row}
+              renderItem={({item}) => (
+                <TouchableOpacity
+                  style={[
+                    styles.voiceOption,
+                    selectedVoice === item.id && styles.voiceOptionSelected,
+                  ]}
+                  onPress={() => handleSelectVoice(item.id)}>
+                  <Text style={[styles.voiceText]}>{item.name}</Text>
+                </TouchableOpacity>
+              )}
+              contentContainerStyle={styles.listContainer}
+            />
+            {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          </View>
+
+          {!fromSettings && (
+            <View style={styles.footer}>
+              <PrimaryButton title="Continue" onPress={handleContinue} />
             </View>
-          </View>
-
-          <View style={styles.footerContainer}>
-            {prevRoute === 'EnterCompanyID' && (
-              <View style={styles.footer}>
-                <View style={styles.separator} />
-                <Animated.View style={[{ transform: [{ translateX: shakeAnim }] }]} >
-                  <PrimaryButton title="Continue" onPress={handleContinue} />
-                </Animated.View>
-              </View>
-            )}
-          </View>
+          )}
         </View>
       </TouchableWithoutFeedback>
     </SafeAreaWrapper>
@@ -143,6 +140,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
+    paddingVertical: 12,
   },
   contentHigher: {
     flexGrow: 1,

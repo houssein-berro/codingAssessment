@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+// screens/main/MainScreen.js
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
@@ -9,12 +10,30 @@ import { useBottomSheet } from '../../hooks/useBottomSheet';
 import SettingsNavigator from '../../navigation/settings/settingsNavigator';
 
 const MainScreen = () => {
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [sheetIndex, setSheetIndex] = useState(-1);
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
-  const { bottomSheetRef } = useBottomSheet();
+  const { bottomSheetRef, deepLinkTarget, setDeepLinkTarget } = useBottomSheet();
 
-  const animateIcon = (toValue: number) => {
+  useEffect(() => {
+    if (deepLinkTarget) {
+      const timer = setTimeout(() => {
+        if (bottomSheetRef.current) {
+          bottomSheetRef.current.snapToIndex(0);
+          setDeepLinkTarget(false);
+        }
+      }, 500); 
+      return () => clearTimeout(timer);
+    }
+  }, [deepLinkTarget, bottomSheetRef]);
+
+  useEffect(() => {
+    if (bottomSheetRef.current && sheetIndex !== null) {
+      bottomSheetRef.current.snapToIndex(sheetIndex);
+    }
+  }, [sheetIndex, bottomSheetRef]);
+
+  const animateIcon = (toValue) => {
     Animated.timing(rotateAnim, {
       toValue,
       duration: 200,
@@ -23,16 +42,17 @@ const MainScreen = () => {
     }).start();
   };
 
-  const handleSheetChanges = (index: number) => {
-    const sheetIsOpen = index !== -1;
-    setIsSheetOpen(sheetIsOpen);
-    animateIcon(sheetIsOpen ? 1 : 0);
+  const handleSheetChanges = (index) => {
+    setSheetIndex(index);
+    animateIcon(index !== -1 ? 1 : 0);
   };
 
   const toggleSettings = () => {
-    if (bottomSheetRef.current) {
-      const isOpen = bottomSheetRef.current.snapToIndex(0) !== -1;
-      isOpen ? bottomSheetRef.current.close() : bottomSheetRef.current.snapToIndex(0);
+    if (sheetIndex === 0) {
+      bottomSheetRef.current?.close();
+      setSheetIndex(-1);
+    } else {
+      setSheetIndex(0);
     }
   };
 
@@ -55,23 +75,18 @@ const MainScreen = () => {
             <IonIcon name="settings-outline" size={28} color="#4F8EF7" />
           </Animated.View>
         </TouchableOpacity>
-
         <Text style={styles.title}>Main Screen</Text>
-        <PrimaryButton
-          title="Launch Voicebot Screen"
-          onPress={() => navigation.navigate('Voicebot')}
-        />
+        <PrimaryButton title="Launch Voicebot Screen" onPress={() => navigation.navigate('Voicebot')} />
       </View>
-
       <BottomSheet
         ref={bottomSheetRef}
-        index={-1}
+        index={sheetIndex}
         snapPoints={['90%']}
         enablePanDownToClose
         onChange={handleSheetChanges}
       >
         <BottomSheetView style={styles.bottomSheetContainer}>
-          {isSheetOpen && <SettingsNavigator />}
+          <SettingsNavigator initialParams={deepLinkTarget ? { fromDeepLink: true } : {}} />
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>
@@ -79,10 +94,7 @@ const MainScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
   mainContent: {
     flex: 1,
     alignItems: 'center',

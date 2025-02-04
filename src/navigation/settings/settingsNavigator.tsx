@@ -7,12 +7,13 @@ import PickVoiceScreen from '../../screens/onboarding/voicesScreen';
 
 const SettingsStack = createStackNavigator();
 
-const SettingsNavigator = () => {
+export default function SettingsNavigator({ initialParams }) {
   return (
     <SettingsStack.Navigator initialRouteName="Settings">
       <SettingsStack.Screen
         name="Settings"
         component={SettingsScreen}
+        initialParams={initialParams} 
         options={{ headerShown: false }}
       />
       <SettingsStack.Screen name="SetCompanyID" component={SetCompanyScreen} />
@@ -20,6 +21,4 @@ const SettingsNavigator = () => {
       <SettingsStack.Screen name="PickVoice" component={PickVoiceScreen} />
     </SettingsStack.Navigator>
   );
-};
-
-export default SettingsNavigator;
+}

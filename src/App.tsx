@@ -1,14 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import RootNavigator from './navigation/rootNavigator';
-import {BottomSheetProvider} from './hooks/useBottomSheet';
+import React from 'react';
+import { BottomSheetProvider } from './hooks/useBottomSheet'; 
+import AppInner from './AppInner';
 
 export default function App() {
   return (
     <BottomSheetProvider>
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
+      <AppInner />
     </BottomSheetProvider>
   );
 }

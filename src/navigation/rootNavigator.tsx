@@ -1,29 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import SplashScreen from '../screens/splash/splashScreen';
+import React, { useState, useEffect } from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 import OnboardingNavigator from './onboarding/onboardingNavigator';
 import MainNavigator from './main/mainNavigator';
+import SplashScreen from '../screens/splash/splashScreen';
 
 const Stack = createStackNavigator();
 
 export default function RootNavigator() {
-  const [showSplash, setShowSplash] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 3000);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <Stack.Navigator screenOptions={{headerShown: false}}>
-      {showSplash ? (
-        <Stack.Screen name="Splash" component={SplashScreen} />
-      ) : (
-        <Stack.Screen
-          name="Onboarding"
-          component={MainNavigator}
-        />
-      )}
+    <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
+      <Stack.Screen name="MainStack" component={MainNavigator} />
     </Stack.Navigator>
   );
 }
