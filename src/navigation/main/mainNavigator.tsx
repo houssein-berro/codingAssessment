@@ -19,7 +19,7 @@ export default function MainNavigator() {
         component={VoicebotScreen}
         options={{
           presentation: 'modal',
-          animation: 'reveal_from_bottom',
+          animation: 'fade',
           headerShown: true,
         }}
       />

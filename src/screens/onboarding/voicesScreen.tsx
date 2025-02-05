@@ -87,7 +87,10 @@ export default function PickVoiceScreen() {
         });
       }, 300);
     } else {
-      navigation.navigate('MainStack');
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'MainStack'}],
+      });
     }
   };
 
