@@ -23,11 +23,7 @@ export default function MainNavigator() {
           headerShown: true,
         }}
       />
-      <MainStack.Screen
-        name="SettingsStack"
-        component={SettingsNavigator}
-        options={{headerShown: false}}
-      />
+
     </MainStack.Navigator>
   );
 }

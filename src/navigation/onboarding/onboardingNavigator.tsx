@@ -35,11 +35,6 @@ export default function OnboardingNavigator() {
           animation: 'slide_from_right',
         }}
       />
-      <OnboardingStack.Screen
-        name="MainStack"
-        component={MainNavigator}
-        options={{headerShown: false}}
-      />
     </OnboardingStack.Navigator>
   );
 }

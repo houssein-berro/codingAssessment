@@ -13,7 +13,7 @@ export default function SettingsNavigator({ initialParams }) {
       <SettingsStack.Screen
         name="Settings"
         component={SettingsScreen}
-        initialParams={initialParams} 
+        initialParams={initialParams}
         options={{ headerShown: false }}
       />
       <SettingsStack.Screen name="SetCompanyID" component={SetCompanyScreen} />
