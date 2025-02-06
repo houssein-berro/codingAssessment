@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {BottomSheetProvider} from './hooks/useBottomSheet';
 import AppInner from './AppInner';
 import SplashScreen from 'react-native-splash-screen';
-import {Platform} from 'react-native';
 
 export default function App() {
   useEffect(() => {

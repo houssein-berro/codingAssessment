@@ -64,7 +64,7 @@ const EnterCompanyID = () => {
         await AsyncStorage.setItem('companyIds', JSON.stringify(updatedIds));
         Alert.alert('Success', 'Company ID added successfully.');
 
-        if (fromSettings && bottomSheetRef?.current) {
+        if (fromSettings) {
           Keyboard.dismiss();
           navigation.goBack();
         } else {
@@ -101,7 +101,10 @@ const EnterCompanyID = () => {
       ]).start();
     }
   };
-
+  useEffect(() => {
+    console.log('fromSettings:', fromSettings);
+  }, [fromSettings]);
+  
   return (
     <SafeAreaWrapper>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -135,7 +138,7 @@ const EnterCompanyID = () => {
 
           <View style={styles.footer}>
             <View style={styles.separator} />
-            {fromSettings ? (
+            {!fromSettings ? (
               <PrimaryButton title="Continue" onPress={handleContinue} />
             ) : (
               <PrimaryButton title="Enter" onPress={handleContinue} />
