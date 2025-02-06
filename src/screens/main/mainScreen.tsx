@@ -22,7 +22,7 @@ const MainScreen = () => {
           bottomSheetRef.current.snapToIndex(0);
           setDeepLinkTarget(false);
         }
-      }, 500);
+      }, 500); 
       return () => clearTimeout(timer);
     }
   }, [deepLinkTarget, bottomSheetRef]);
@@ -86,7 +86,7 @@ const MainScreen = () => {
         onChange={handleSheetChanges}
       >
         <BottomSheetView style={styles.bottomSheetContainer}>
-          <SettingsNavigator />
+          <SettingsNavigator initialParams={deepLinkTarget ? { fromDeepLink: true } : {}} />
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>

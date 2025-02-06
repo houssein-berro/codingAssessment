@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,10 +9,10 @@ import {
   Animated,
   Alert,
 } from 'react-native';
-import { SafeAreaWrapper } from '../../components/safeArea/safeArea';
-import { PrimaryButton } from '../../components/primaryButton/primaryButton';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { useBottomSheet } from '../../hooks/useBottomSheet';
+import {SafeAreaWrapper} from '../../components/safeArea/safeArea';
+import {PrimaryButton} from '../../components/primaryButton/primaryButton';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {useBottomSheet} from '../../hooks/useBottomSheet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EnterCompanyID = () => {
@@ -24,8 +24,8 @@ const EnterCompanyID = () => {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { fromSettings } = route.params || {};
-  const { bottomSheetRef } = useBottomSheet();
+  const {fromSettings} = route.params || {};
+  const {bottomSheetRef} = useBottomSheet();
 
   const fetchCompanyIds = async () => {
     try {
@@ -37,7 +37,7 @@ const EnterCompanyID = () => {
     }
   };
 
-  const handleChangeText = async (text) => {
+  const handleChangeText = async text => {
     const trimmedText = text.toUpperCase().trim();
     setCompanyId(trimmedText);
     setError('');
@@ -65,12 +65,8 @@ const EnterCompanyID = () => {
         Alert.alert('Success', 'Company ID added successfully.');
 
         if (fromSettings && bottomSheetRef?.current) {
-          bottomSheetRef.current.close();
           Keyboard.dismiss();
-          navigation.reset({
-            index:0,
-            routes:[{name: 'Settings'}]
-          })
+          navigation.goBack();
         } else {
           navigation.navigate('PickVoice');
         }
@@ -119,9 +115,8 @@ const EnterCompanyID = () => {
             <Animated.View
               style={[
                 styles.inputContainer,
-                { transform: [{ translateX: shakeAnim }] },
-              ]}
-            >
+                {transform: [{translateX: shakeAnim}]},
+              ]}>
               <TextInput
                 style={[styles.input, isFocused && styles.inputFocused]}
                 placeholder="Company ID"
@@ -140,7 +135,11 @@ const EnterCompanyID = () => {
 
           <View style={styles.footer}>
             <View style={styles.separator} />
-            <PrimaryButton title="Continue" onPress={handleContinue} />
+            {fromSettings ? (
+              <PrimaryButton title="Continue" onPress={handleContinue} />
+            ) : (
+              <PrimaryButton title="Enter" onPress={handleContinue} />
+            )}
           </View>
         </View>
       </TouchableWithoutFeedback>

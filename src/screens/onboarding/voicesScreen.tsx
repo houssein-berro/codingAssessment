@@ -31,20 +31,13 @@ export default function PickVoiceScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const {fromSettings} = route.params || {};
-  const {bottomSheetRef} = useBottomSheet();
 
   const handleSelectVoice = (voiceId: string) => {
     setSelectedVoice(voiceId);
     setError('');
 
-    if (fromSettings && bottomSheetRef?.current) {
-      bottomSheetRef.current.close();
-      setTimeout(() => {
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Settings'}],
-        });
-      }, 300);
+    if (fromSettings) {
+      navigation.goBack();
     }
   };
 
