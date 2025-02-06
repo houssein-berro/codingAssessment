@@ -81,7 +81,7 @@ const MainScreen = () => {
       <BottomSheet
         ref={bottomSheetRef}
         index={sheetIndex}
-        snapPoints={['90%']}
+        snapPoints={['100%']}
         enablePanDownToClose
         onChange={handleSheetChanges}
       >
